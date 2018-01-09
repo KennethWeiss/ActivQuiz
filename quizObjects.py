@@ -66,7 +66,7 @@ def addMultipleChoice():
 
 def addToSheetNumeric(function, Sheet):
     for num in range(1,10):  #to iterate between first to second-1 number of questions
-        #function = add
+        function()
         Sheet.spreadsheet.write(Sheet.row,Sheet.column, 'Q' + str(num))
         Sheet.spreadsheet.write(Sheet.row,Sheet.column+1,Question.question)
         Sheet.row+=1
@@ -84,6 +84,7 @@ def addToSheetNumeric(function, Sheet):
 
 def addToSheetMultipleChoice(function, Sheet):
     for num in range(1,10):  #to iterate between first to second-1 number of questions
+        function()
         Sheet.spreadsheet.write(Sheet.row,Sheet.column, 'Q' + str(num))
         #write a question from function
         Sheet.spreadsheet.write(Sheet.row,Sheet.column+1,Question.question)
@@ -107,31 +108,31 @@ def addToSheetMultipleChoice(function, Sheet):
 
 
 def runSheetMaker(functions):
-   w = Workbook()
-   ws = w.add_sheet('OK', cell_overwrite_ok=True)
+    w = Workbook()
+    ws = w.add_sheet('OK', cell_overwrite_ok=True)
 
-   Sheet.spreadsheet = ws
+    Sheet.spreadsheet = ws
 
-   Sheet.row = 4
-   Sheet.column = 1
-   Question.level = 1
-   Question.answerType = 'Numeric'
-   ws.write(1,1,'Title')
-   ws.write(2,1,'Quiz')
+    Sheet.row = 4
+    Sheet.column = 1
+    Question.level = 1
+    Question.answerType = 'Numeric'
+    ws.write(1,1,'Title')
+    ws.write(2,1,'Quiz')
     #Determines if the answer type and sends the function to that for proper template
-   for f in functions:
-      f()
-      if(Question.answerType == "Numeric") or (Question.answerType == "AlphaNumeric"):
-          print("Adding Numeric")
-          addToSheetNumeric(functions, Sheet)
-          Question.level+=1
-      elif(Question.answerType == "MultipleChoice"):
-          addToSheetMultipleChoice(functions, Sheet)
-          print("Adding multiple Choice")
-      else:
-          print("QuestionType is " + Question.answerType)
-   print(Sheet.row)
-   w.save('addition.xls')
+    for f in functions:
+        f()
+        if(Question.answerType == "Numeric") or (Question.answerType == "AlphaNumeric"):
+            print("Adding Numeric")
+            addToSheetNumeric(f, Sheet)
+            Question.level+=1
+        elif(Question.answerType == "MultipleChoice"):
+            addToSheetMultipleChoice(f, Sheet)
+            print("Adding multiple Choice")
+        else:
+            print("QuestionType is " + Question.answerType)
+    print(Sheet.row)
+    w.save('addition.xls')
 
 addition = [add, addMultipleChoice]
 
