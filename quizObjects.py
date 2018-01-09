@@ -1,4 +1,5 @@
 #Maybe I should convert runSheetMaker into a method of the object sheet this could be used to initialize the sheet
+#IT DOESN'T SEEM TO BE GIVING RANDOM NUMBERS FOR EACH PROBLEM
 #!/usr/bin/python2.7
 # -*- coding: cp1252 -*-
 from xlwt import *
@@ -99,10 +100,9 @@ def addToSheetMultipleChoice(function, Sheet):
         #write an answer to a cell from function
         print("Before for loop")
         for letter, choice in Question.multipleChoices.items():
-            print(letter)
-            #Question.row+=1
-            #Sheet.ws.write(Sheet.row,Sheet.col,letter)
-            #Sheet.ws.write(Sheet.row,Sheet.col+1,choice)
+            Sheet.row+=1
+            Sheet.spreadsheet.write(Sheet.row,Sheet.column,letter)
+            Sheet.spreadsheet.write(Sheet.row,Sheet.column+1,choice)
         Sheet.row+=3
 
 
