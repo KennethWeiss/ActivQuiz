@@ -1,5 +1,5 @@
 #Maybe I should convert runSheetMaker into a method of the object sheet this could be used to initialize the sheet
-#IT DOESN'T SEEM TO BE GIVING RANDOM NUMBERS FOR EACH PROBLEM
+#SOMETHING IS WRONG WITH GETRANDNOTZERO
 #!/usr/bin/python2.7
 # -*- coding: cp1252 -*-
 from xlwt import *
@@ -34,9 +34,9 @@ testSheet.fileName = "convertLinear"
 testSheet.title = "Title"
 testSheet.quiz = "Quiz"
 
-def getRandNotZero(first,last):
-   numbers = range(first,-1) + range(1,last)
-   return random.choice(numbers)
+#def getRandNotZero(first,last):
+#   numbers = range(first,-1) + range(1,last)
+#   return random.choice(numbers)
 
 
 
@@ -60,13 +60,20 @@ def addMultipleChoice():
     Question.multipleChoices["C"] = firstInt * secondInt
     Question.multipleChoices["D"] = firstInt + firstInt
 
+def subtract():
+   firstInt = getRandNotZero(1,30);
+   secondInt = getRandNotZero(1,30);
+   if(secondInt>firstInt):
+      Question.question, Question.answer = (str(secondInt)+" - "+str(firstInt),secondInt-firstInt)
+   else:
+      Question.question, Question.answer = (str(firstInt)+" - "+str(secondInt),firstInt-secondInt)
 
 
 #!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1
 
 def addToSheetNumeric(function, Sheet):
     for num in range(1,10):  #to iterate between first to second-1 number of questions
-        function()
+        #function = add
         Sheet.spreadsheet.write(Sheet.row,Sheet.column, 'Q' + str(num))
         Sheet.spreadsheet.write(Sheet.row,Sheet.column+1,Question.question)
         Sheet.row+=1
@@ -83,56 +90,54 @@ def addToSheetNumeric(function, Sheet):
         print("Row in addToSheetNumeric = " +str(Sheet.row))
 
 def addToSheetMultipleChoice(function, Sheet):
-    for num in range(1,10):  #to iterate between first to second-1 number of questions
-        function()
-        Sheet.spreadsheet.write(Sheet.row,Sheet.column, 'Q' + str(num))
+    for num in range(1,101):  #to iterate between first to second-1 number of questions
+        Sheet.ws.write(Question.row,Question.col, 'Q' + str(num))
         #write a question from function
-        Sheet.spreadsheet.write(Sheet.row,Sheet.column+1,Question.question)
-        Sheet.row+=1
-        Sheet.spreadsheet.write(Sheet.row,Sheet.column,"Level")
-        Sheet.spreadsheet.write(Sheet.row,Sheet.column+1,Question.level)
-        Sheet.row+=1
-        Sheet.spreadsheet.write(Sheet.row,Sheet.column,"Question Type")
-        Sheet.answerType = "Multiple Choice"
-        Sheet.spreadsheet.write(Sheet.row,Sheet.column+1,Question.answerType)
-        Sheet.row+=1
-        Sheet.spreadsheet.write(Sheet.row,Sheet.column,"Correct Answers")
-        Sheet.spreadsheet.write(Sheet.row,Sheet.column+1,Question.answer)
+        Sheet.ws.write(Question.row,Question.col+1,Question.question)
+        Question.row+=1
+        Sheet.ws.write(Question.row,Question.col,"Level")
+        Sheet.ws.write(Question.row,Question.col+1,Question.level)
+        Question.row+=1
+        Sheet.ws.write(Question.row,Question.col,"Question Type")
+        Question.answerType = "Multiple Choice"
+        Sheet.ws.write(Question.row,Question.col+1,Question.answerType)
+        Question.row+=1
+        Sheet.ws.write(Question.row,Question.col,"Correct Answers")
+        Sheet.ws.write(Question.row,Question.col+1,Question.answer)
         #write an answer to a cell from function
-        print("Before for loop")
         for letter, choice in Question.multipleChoices.items():
-            Sheet.row+=1
-            Sheet.spreadsheet.write(Sheet.row,Sheet.column,letter)
-            Sheet.spreadsheet.write(Sheet.row,Sheet.column+1,choice)
+            Question.row+=1
+            Sheet.ws.write(Question.row,Question.col,letter)
+            Sheet.ws.write(Question.row,Question.col+1,choice)
         Sheet.row+=3
 
 
 def runSheetMaker(functions):
-    w = Workbook()
-    ws = w.add_sheet('OK', cell_overwrite_ok=True)
+   w = Workbook()
+   ws = w.add_sheet('OK', cell_overwrite_ok=True)
 
-    Sheet.spreadsheet = ws
+   Sheet.spreadsheet = ws
 
-    Sheet.row = 4
-    Sheet.column = 1
-    Question.level = 1
-    Question.answerType = 'Numeric'
-    ws.write(1,1,'Title')
-    ws.write(2,1,'Quiz')
+   Sheet.row = 4
+   Sheet.column = 1
+   Question.level = 1
+   Question.answerType = 'Numeric'
+   ws.write(1,1,'Title')
+   ws.write(2,1,'Quiz')
     #Determines if the answer type and sends the function to that for proper template
-    for f in functions:
-        f()
-        if(Question.answerType == "Numeric") or (Question.answerType == "AlphaNumeric"):
-            print("Adding Numeric")
-            addToSheetNumeric(f, Sheet)
-            Question.level+=1
-        elif(Question.answerType == "MultipleChoice"):
-            addToSheetMultipleChoice(f, Sheet)
-            print("Adding multiple Choice")
-        else:
-            print("QuestionType is " + Question.answerType)
-    print(Sheet.row)
-    w.save('addition.xls')
+   for f in functions:
+      f()
+      if(Question.answerType == "Numeric") or (Question.answerType == "AlphaNumeric"):
+          print("Adding Numeric")
+          addToSheetNumeric(functions, Sheet)
+          Question.level+=1
+      elif(Question.answerType == "MultipleChoice"):
+          addToSheetNumeric(functions, Sheet)
+          print("Adding multiple Choice")
+      else:
+          print("QuestionType is " + Question.answerType)
+   print(Sheet.row)
+   w.save('addition.xls')
 
 addition = [add, addMultipleChoice]
 
