@@ -158,25 +158,6 @@ class Sheet:
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 def add():
     Question.answerType = "numerical"
     firstInt = random.randint(1,12)
@@ -897,19 +878,84 @@ def hardPercentages():
 
 def sysEqZeroPair():
     Question.answerType = "numerical"
-    x = random.randint(1,9)
-    yCoefficient = random.randint(1,9)
-    x1Coefficient = random.randint(1,9)
-    x2Coefficient = random.randint(1,9)
-    solution = (x1Coefficient+x2Coefficient)*random.randint(1,5)
-    solution1 = solution - random.randint(1,solution)
-    solution2 = solution - solution1
-    Question.question = "%dy + %dx = %d and -%dy + %dx = %d Solve for x: " % (yCoefficient,x1Coefficient,solution1,yCoefficient,x2Coefficient,solution2)
-    Question.answer = solution
+    xValue = random.randint(1,6)
+    yValue = random.randint(1,6)
+
+    y1Coefficient = random.randint(1,9)
+    y2Coefficient = random.randint(1,9)
+    x1Coefficient = random.randint(1,6)
+    x2Coefficient = random.randint(1,6)
+    createZeroPair = random.choice("12")#should first or second equation be negative
+    solveFor = random.choice("xy")
+    if(solveFor == "x"):
+        if(createZeroPair == "1"):
+            y2Coefficient = y1Coefficient *-1
+        elif(createZeroPair == "2"):
+            y1Coefficient = y2Coefficient *-1
+        solution1 = xValue*x1Coefficient 
+        solution2 = xValue*x2Coefficient
+    elif(solveFor == "y"):
+        if(createZeroPair == "1"):
+            x2Coefficient = x1Coefficient *-1
+        elif(createZeroPair == "2"):
+            x1Coefficient = x2Coefficient *-1
+        solution1 = yValue*y1Coefficient 
+        solution2 = yValue*y2Coefficient
+    
+    tempSolution = solution1 + solution2
+    changeSolution = random.randint(1, tempSolution)
+    solution1 = tempSolution - changeSolution
+    solution2 = tempSolution - solution1
+    Question.question = "%dy + %dx = %d and %dy + %dx = %d Solve for %s: " % (y1Coefficient,x1Coefficient,solution1,y2Coefficient,x2Coefficient,solution2,solveFor)
+    Question.answer = xValue 
+
+def sysEqZeroPairMultiple():
+    Question.answerType = "numerical"
+    xValue = random.randint(1,6)
+    yValue = random.randint(1,6)
+
+    y1Coefficient = random.randint(1,9)
+    y2Coefficient = random.randint(1,9)
+    x1Coefficient = random.randint(1,6)
+    x2Coefficient = random.randint(1,6)
+    createZeroPair = random.choice("12")#should first or second equation be negative
+    solveFor = random.choice("xy")
+    if(solveFor == "x"):
+        if(createZeroPair == "1"):
+            y2Coefficient = y1Coefficient *-1
+        elif(createZeroPair == "2"):
+            y1Coefficient = y2Coefficient *-1
+        solution1 = xValue*x1Coefficient 
+        solution2 = xValue*x2Coefficient
+    elif(solveFor == "y"):
+        if(createZeroPair == "1"):
+            x2Coefficient = x1Coefficient *-1
+        elif(createZeroPair == "2"):
+            x1Coefficient = x2Coefficient *-1
+        solution1 = yValue*y1Coefficient 
+        solution2 = yValue*y2Coefficient
+    
+    tempSolution = solution1 + solution2
+    changeSolution = random.randint(1, tempSolution)
+    solution1 = tempSolution - changeSolution
+    solution2 = tempSolution - solution1
+    #same as above but create multiple on one equation
+    createZeroPair = random.choice("12")
+    multiple = random.randint(2,4)
+    if(createZeroPair == "1"):
+        solution1 *= multiple
+        x1Coefficient *= multiple
+        y1Coefficient *= multiple
+    else:
+        solution2 *= multiple
+        x2Coefficient *= multiple
+        y2Coefficient *= multiple
+    Question.question = "%dy + %dx = %d and %dy + %dx = %d Solve for %s: " % (y1Coefficient,x1Coefficient,solution1,y2Coefficient,x2Coefficient,solution2,solveFor)
+    Question.answer = xValue 
 
 #!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1
 
-addition = [
+allFunctions = [
             add,
             addMultipleChoice,
             subtract,
@@ -953,25 +999,16 @@ addition = [
             percentagesUptoTwenty,
             percentages,
             hardPercentages,
-            sysEqZeroPair,
-            sysEqZeroPair,
-            sysEqZeroPair,
-            sysEqZeroPair,
-            sysEqZeroPair,
-            sysEqZeroPair,
-            sysEqZeroPair,
-            sysEqZeroPair,
-            sysEqZeroPair,
-            sysEqZeroPair,
             sysEqZeroPair]
 
-multiply = [ multiply]
+systemOfEquations = [sysEqZeroPair,sysEqZeroPairMultiple]
 
 Sheet.initialSheet()
-for i in multiply:
+numberofproblems = int(input("How many questions would you like for each set?"))
+for i in systemOfEquations:
     print(i)
-    for i in range(100):
+    for j in range(numberofproblems):
         Sheet.insertProblem(i)
-Sheet.w.save("multiply.xls")
+Sheet.w.save("sysEq.xls")
 
 print("Awesome")
